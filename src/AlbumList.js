@@ -1,77 +1,60 @@
 import React from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import Display from './Display';
+import { BrowserRouter as Link} from 'react-router-dom';
+import {connect } from 'react-redux';
+import DisplayAlbums from './actions/DisplayAlbums'
 
 class AlbumList extends React.Component {
-    constructor() {
-        super()
-        this.state = {
-            albums: []
-        }
-    }
+
     componentDidMount() {
-        this.setState({ isLoading: true });
         axios.get('http://jsonplaceholder.typicode.com/albums')
         .then(result => 
-            this.setState({
-                albums: result.data,
-                isLoading: false
-            })
+            this.props.displayAlbums(result.data)
         )
-        .catch(error => 
-            this.setState({
-                error,
-                isLoading: false
-            })
-        );
+
     }
     render() {
-        if(this.state.isLoading) {
-            return "Loading..."
-        }
-        if(this.state.error) {
-            return <p>{this.state.error.message}</p>
-        }
+        
+        const {albums} = this.props;
+
+        const albumList = albums.length ? (
+            albums.map(album => {
+                return (
+                <div className="post" key={album.id}>
+                    <div className="card-content">
+                    <Link to={"/display/"+album.id}>
+                        <span className="card-title">{album.title}</span>
+                    </Link>
+                    </div>
+
+                </div>
+                )
+            })
+            ) : (
+                <div className="center">No albums yet</div>
+            )
+
         return (<React.Fragment>
-                    {/* <table style={{width:'60%'}} className='table'>
-                         <thead className="thead-light">
-                             <tr>
-                                  <th>Album Name</th>
-                             </tr>
-                         </thead>
-                         <tbody>
-                              {this.state.albums ?
-                              this.state.albums.map(album => {
-                                     return (<tr key={Math.random()}>
-                                             <td>{album.title}</td>
-                                     </tr>)
-                             }):<tr><td>No Data found</td></tr>
-                             }
-                         </tbody>
-                    </table> */}
-
-                    <Router>
-                    <React.Fragment>
-
-                    {this.state.albums ?
-                              this.state.albums.map(album => {
-                                     return (
-                                        
-                                        <Link to={"/display/"+album.id}>             
-                                        <li>{album.title}</li> 
-                                        </Link> 
-                                 )
-                             }):<span>No Data found</span>
-                             }
-
-                       
-                        
-                        {/* <Route path="/display/:topic" component={Display}/> */}
-                    </React.Fragment>
-                </Router>
+            <div className="container">
+                <h4 className="center">Albums</h4>
+                {albumList}
+            </div>
 
             </React.Fragment>)  
     }
 }
-export default AlbumList;
+
+const mapStateToProps = (state) => {
+    return {
+        albums: state.albums
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        displayAlbums: (list) => {
+            dispatch(DisplayAlbums(list))
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(AlbumList);

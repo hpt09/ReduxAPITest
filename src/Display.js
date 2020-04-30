@@ -1,49 +1,60 @@
 import React from 'react';
 import axios from 'axios';
+import {connect } from 'react-redux';
+import DisplayPics from './actions/DisplayPics'
+import DisplayName from './actions/DisplayName'
 
 class Display extends React.Component {
-    constructor() {
-        super()
-        this.state = {
-            pics: []
-        }
-    }
+
     componentDidMount() {
-        this.setState({ isLoading: true });
         axios.get('http://jsonplaceholder.typicode.com/albums/'+this.props.match.params.topic+'/photos')
         .then(result => 
-            this.setState({
-                pics: result.data,
-                isLoading: false
-            })
+            this.props.displayPics(result.data)
         )
-        .catch(error => 
-            this.setState({
-                error,
-                isLoading: false
-            })
-        );
+        axios.get('http://jsonplaceholder.typicode.com/albums/'+this.props.match.params.topic)
+        .then(result => 
+            this.props.displayName(result.data.title)
+        )
+        
     }
        render() {
-        if(this.state.isLoading) {
-            return "Loading..."
-        }
-        if(this.state.error) {
-            return <p>{this.state.error.message}</p>
-        }
+        const {pics} = this.props;
+        const allPics = pics.length ? (
+            pics.map(pic => {
+                   return (
+                      
+                  <a href={pic.thumbnailUrl}><img src={pic.thumbnailUrl} alt="pic" /> </a>
+               )
+           })
+           ) :<span>No Photos found</span>
+           
+
                return(<React.Fragment>
 
-                <h2>Inside {this.props.match.params.topic} component</h2>
-                {this.state.pics ?
-                              this.state.pics.map(pic => {
-                                     return (
-                                        
-                                    <a href={pic.thumbnailUrl}><img src={pic.thumbnailUrl} alt="pic" /> </a>
-                                 )
-                             }):<span>No Data found</span>
-                             }
+                <h2>Pictures of '{this.props.name}' Album </h2>
+                {allPics}
                        
                </React.Fragment>)
        }
 }
-export default Display;
+
+const mapStateToProps = (state) => {
+    return {
+        pics: state.pics,
+        name: state.name
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        displayPics: (list) => {
+            dispatch(DisplayPics(list))
+        
+        },
+        displayName: (name) => {
+            dispatch(DisplayName(name))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Display);
