@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {connect } from 'react-redux';
 import DisplayAlbums from './actions/DisplayAlbums'
 
-class AlbumList extends React.Component {
+export class AlbumList extends React.Component {
 
     componentDidMount() {
         axios.get('http://jsonplaceholder.typicode.com/albums')
