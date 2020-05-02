@@ -7,7 +7,8 @@ Enzyme.configure({ adapter: new Adapter() })
 
 function setup() {
   const props = {
-    albums: [{"title":"idk", "id":"1"}]
+    albums: [{"title":"idk", "id":"1"},
+    {"title":"idkagain", "id":"2"}]
   }
 
   const enzymeWrapper = shallow(<AlbumList {...props} />)
@@ -23,7 +24,7 @@ describe('components', () => {
     it('should render self and subcomponents', () => {
       const { enzymeWrapper } = setup()
 
-      expect(enzymeWrapper.find('span').hasClass('card-title')).toBe(true)
+      expect(enzymeWrapper.find('.album-name').length).toBe(2)
 
       expect(enzymeWrapper.find('h4').text()).toBe('Albums')
 

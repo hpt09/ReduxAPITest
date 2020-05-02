@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {connect } from 'react-redux';
 import DisplayAlbums from './actions/DisplayAlbums'
+import './App.scss'
 
 export class AlbumList extends React.Component {
 
@@ -20,14 +21,16 @@ export class AlbumList extends React.Component {
         const albumList = albums.length ? (
             albums.map(album => {
                 return (
-                <div className="post" key={album.id}>
-                    <div className="card-content">
+               
+                    
                     <Link to={"/display/"+album.id}>
-                        <span className="card-title">{album.title}</span>
+                         <div className="album" key={album.id}>
+                        <span className="album-name">{album.title}</span>
+                        </div>
                     </Link>
-                    </div>
+                    
 
-                </div>
+               
                 )
             })
             ) : (
@@ -35,8 +38,11 @@ export class AlbumList extends React.Component {
             )
 
         return (<React.Fragment>
+            <div className="header">
+                <h4>Albums</h4>
+                </div>
             <div className="container">
-                <h4 className="center">Albums</h4>
+                
                 {albumList}
             </div>
 

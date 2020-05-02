@@ -4,7 +4,7 @@ import {connect } from 'react-redux';
 import DisplayPics from './actions/DisplayPics'
 import DisplayName from './actions/DisplayName'
 
-class Display extends React.Component {
+export class Display extends React.Component {
 
     componentDidMount() {
         axios.get('http://jsonplaceholder.typicode.com/albums/'+this.props.match.params.topic+'/photos')
@@ -30,8 +30,9 @@ class Display extends React.Component {
            
 
                return(<React.Fragment>
-
-                <h2>Pictures of '{this.props.name}' Album </h2>
+                <div className="header">
+                <h2 className="title">Pictures of '{this.props.name}' Album</h2>
+                </div>
                 {allPics}
                        
                </React.Fragment>)
